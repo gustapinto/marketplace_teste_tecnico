@@ -1,0 +1,29 @@
+version: "3.6"
+
+services:
+  go:
+    image: golang:1.18
+    tty: true
+    working_dir: /src
+    ports:
+      - 80:80
+    volumes:
+      - ./:/src:Z
+    networks:
+      - backend
+    env_file:
+      - .env
+
+  postgres:
+    image: postgres:14
+    tty: true
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    networks:
+      - backend
+    env_file:
+      - .env
+
+networks:
+  backend:
