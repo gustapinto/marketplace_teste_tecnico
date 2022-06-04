@@ -7,21 +7,21 @@ import (
 	"gorm.io/gorm"
 )
 
-var dbSingleton *gorm.DB
+var db *gorm.DB
 
-func DB(config *DbConfig) (*gorm.DB, error) {
-	if dbSingleton != nil {
-		return dbSingleton, nil
+func DB(config *DbConfig) *gorm.DB {
+	if db != nil {
+		return db
 	}
 
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s", config.Host, config.User,
 		config.Password, config.Name, config.Port)
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	newDb, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
 
-	dbSingleton = db
-	return dbSingleton, nil
+	db = newDb
+	return db
 }

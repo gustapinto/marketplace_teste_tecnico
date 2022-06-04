@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"marketplace_teste_tecnico/src/controller"
 	"marketplace_teste_tecnico/src/routes"
 	"marketplace_teste_tecnico/src/utils"
 
@@ -10,17 +11,13 @@ import (
 
 func main() {
 	config := utils.GetConfig()
-	router := gin.Default()
-	address := fmt.Sprintf("%s:%s", config.Api.Host, config.Api.Port)
-
-	db, err := utils.DB(config.Db)
-	if err != nil {
-		panic(err)
-	}
-
+	db := utils.DB(config.Db)
 	db.AutoMigrate()
-	routes.Api(router, db)
 
+	router := gin.Default()
+	routes.ProductRoutes(router, &controller.Product{Db: db})
+
+	address := fmt.Sprintf("%s:%s", config.Api.Host, config.Api.Port)
 	if err := router.Run(address); err != nil {
 		panic(err)
 	}
