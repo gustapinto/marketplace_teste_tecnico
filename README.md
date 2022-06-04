@@ -14,6 +14,11 @@
 curl localhost:80/api/products
 ```
 
+### Obtendo item pelo código (GET)
+```bash
+curl localhost:80/api/products/foo
+```
+
 ### Adicionando novo item (POST)
 ```bash
 curl -X POST localhost:80/api/products \

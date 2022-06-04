@@ -45,3 +45,16 @@ func (c *Product) Save(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, newProduct)
 	return
 }
+
+func (c *Product) GetByCode(ctx *gin.Context) {
+	productCode := ctx.Param("code")
+
+	var product models.Product
+	if result := c.repo.DB.First(&product, "code = ?", productCode); result.Error != nil {
+		ctx.JSON(http.StatusInternalServerError, result.Error)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, product)
+	return
+}
