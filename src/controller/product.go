@@ -49,12 +49,53 @@ func (c *Product) Save(ctx *gin.Context) {
 func (c *Product) GetByCode(ctx *gin.Context) {
 	productCode := ctx.Param("code")
 
-	var product models.Product
-	if result := c.repo.DB.First(&product, "code = ?", productCode); result.Error != nil {
-		ctx.JSON(http.StatusInternalServerError, result.Error)
+	product, err := c.repo.Get(productCode)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, err)
 		return
 	}
 
 	ctx.JSON(http.StatusOK, product)
+	return
+}
+
+func (c *Product) Update(ctx *gin.Context) {
+	productCode := ctx.Param("code")
+
+	product, err := c.repo.Get(productCode)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	if err := ctx.BindJSON(&product); err != nil {
+		ctx.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	if err := c.repo.Save(product); err != nil {
+		ctx.JSON(http.StatusBadGateway, err)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, product)
+	return
+}
+
+func (c *Product) Delete(ctx *gin.Context) {
+	productCode := ctx.Param("code")
+
+	product, err := c.repo.Get(productCode)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	if result := c.repo.DB.Delete(&product); result.Error != nil {
+		ctx.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
 	return
 }
