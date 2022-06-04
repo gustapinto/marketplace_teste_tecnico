@@ -6,6 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ProductRoutes(router *gin.Engine, controller *controller.Product) {
-	router.POST("/api/products", controller.Save)
+func ProductRoutes(router *gin.Engine, c controller.Product) {
+	router.POST("/api/products", c.Save)
 }

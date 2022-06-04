@@ -13,6 +13,6 @@ type Product struct {
 	Code      string    `json:"codigo" gorm:"codigo"`
 	Name      string    `json:"nome" gorm:"nome"`
 	Inventory Inventory `json:"inventory" gorm:"embedded"`
-	PriceOf   string    `json:"preco_de" gorm:"preco_de"`
-	PriceFor  string    `json:"preco_por" gorm:"preco_por"`
+	PriceOf   float64   `json:"preco_de" gorm:"preco_de"`
+	PriceFor  float64   `json:"preco_por" gorm:"preco_por"`
 }

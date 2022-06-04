@@ -2,6 +2,7 @@ package controller
 
 import (
 	"marketplace_teste_tecnico/src/models"
+	"marketplace_teste_tecnico/src/repository"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -9,7 +10,13 @@ import (
 )
 
 type Product struct {
-	Db *gorm.DB
+	repo repository.ProductRepository
+}
+
+func NewProductController(db *gorm.DB) *Product {
+	return &Product{
+		repo: repository.ProductRepository{DB: db},
+	}
 }
 
 func (c *Product) Save(ctx *gin.Context) {
@@ -19,7 +26,11 @@ func (c *Product) Save(ctx *gin.Context) {
 		return
 	}
 
-	c.Db.Save(&newProduct)
+	err := c.repo.Save(&newProduct)
+	if err != nil {
+		ctx.IndentedJSON(http.StatusBadRequest, err.Error())
+	}
+
 	ctx.IndentedJSON(http.StatusCreated, newProduct)
 	return
 }

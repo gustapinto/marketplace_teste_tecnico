@@ -15,7 +15,7 @@ func main() {
 	db.AutoMigrate()
 
 	router := gin.Default()
-	routes.ProductRoutes(router, &controller.Product{Db: db})
+	routes.ProductRoutes(router, *controller.NewProductController(db))
 
 	address := fmt.Sprintf("%s:%s", config.Api.Host, config.Api.Port)
 	if err := router.Run(address); err != nil {
