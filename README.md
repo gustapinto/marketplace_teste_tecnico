@@ -25,3 +25,15 @@ curl -X POST localhost:80/api/products \
     -H 'Content-Type: application/json' \
     -d '{"codigo":"foo","nome":"foobar","preco_de":100.00,"preco_por":70.00,"estoque":{"total":100,"corte":80}}'
 ```
+
+### Atualizando um item (PUT)
+```bash
+curl -X PUT localhost:80/api/products/foo \
+    -H 'Content-Type: application/json' \
+    -d '{"codigo":"foo","nome":"foobar","preco_de":100.00,"preco_por":70.00,"estoque":{"total":150,"corte":95}}'
+```
+
+### Deletando um item (DELETE)
+```bash
+curl -X DELETE localhost:80/api/products/foo
+```
