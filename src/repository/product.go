@@ -11,7 +11,7 @@ type ProductRepository struct {
 	DB *gorm.DB
 }
 
-var ErrPriceOfLowerThanPriceFor = errors.New("price Of cant be lower than Price For")
+var ErrPriceOfLowerThanPriceFor = errors.New("price of preco_de cant be lower than preco_por")
 
 func (r *ProductRepository) Save(product *models.Product) error {
 	if product.PriceOf < product.PriceFor {
@@ -19,6 +19,9 @@ func (r *ProductRepository) Save(product *models.Product) error {
 	}
 
 	product.Inventory.Available = product.Inventory.Total - product.Inventory.Cut
-	r.DB.Save(product)
+	if result := r.DB.Save(product); result.Error != nil {
+		return result.Error
+	}
+
 	return nil
 }

@@ -19,18 +19,29 @@ func NewProductController(db *gorm.DB) *Product {
 	}
 }
 
-func (c *Product) Save(ctx *gin.Context) {
-	var newProduct models.Product
-	if err := ctx.BindJSON(&newProduct); err != nil {
-		ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+func (c *Product) GetAll(ctx *gin.Context) {
+	var products []models.Product
+	if result := c.repo.DB.Find(&products); result.Error != nil {
+		ctx.JSON(http.StatusInternalServerError, result.Error)
 		return
 	}
 
-	err := c.repo.Save(&newProduct)
-	if err != nil {
-		ctx.IndentedJSON(http.StatusBadRequest, err.Error())
+	ctx.JSON(http.StatusOK, products)
+	return
+}
+
+func (c *Product) Save(ctx *gin.Context) {
+	var newProduct models.Product
+	if err := ctx.BindJSON(&newProduct); err != nil {
+		ctx.JSON(http.StatusInternalServerError, err.Error())
+		return
 	}
 
-	ctx.IndentedJSON(http.StatusCreated, newProduct)
+	if err := c.repo.Save(&newProduct); err != nil {
+		ctx.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusCreated, newProduct)
 	return
 }
