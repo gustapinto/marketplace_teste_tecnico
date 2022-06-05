@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"errors"
 	"marketplace_teste_tecnico/src/models"
 	"marketplace_teste_tecnico/src/repository"
 	"net/http"
@@ -38,7 +39,12 @@ func (c *Product) Save(ctx *gin.Context) {
 	}
 
 	if err := c.repo.Save(&newProduct); err != nil {
-		ctx.JSON(http.StatusBadRequest, err.Error())
+		if errors.Is(err, repository.ErrPriceOfLowerThanPriceFor) {
+			ctx.JSON(http.StatusBadRequest, err.Error())
+			return
+		}
+
+		ctx.JSON(http.StatusInternalServerError, err)
 		return
 	}
 
@@ -74,7 +80,12 @@ func (c *Product) Update(ctx *gin.Context) {
 	}
 
 	if err := c.repo.Save(product); err != nil {
-		ctx.JSON(http.StatusBadGateway, err)
+		if errors.Is(err, repository.ErrPriceOfLowerThanPriceFor) {
+			ctx.JSON(http.StatusBadRequest, err.Error())
+			return
+		}
+
+		ctx.JSON(http.StatusBadRequest, err)
 		return
 	}
 
