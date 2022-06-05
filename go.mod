@@ -3,9 +3,9 @@ module marketplace_teste_tecnico
 go 1.18
 
 require (
-	github.com/DATA-DOG/go-sqlmock v1.5.0
 	github.com/gin-gonic/gin v1.8.0
 	gorm.io/driver/postgres v1.3.7
+	gorm.io/driver/sqlite v1.3.2
 	gorm.io/gorm v1.23.5
 )
 
@@ -39,5 +39,4 @@ require (
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gorm.io/driver/sqlite v1.3.2 // indirect
 )
