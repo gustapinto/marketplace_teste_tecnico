@@ -3,14 +3,17 @@ package utils
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
+	"math/rand"
 	"net/http"
 	"net/http/httptest"
+	"time"
 
-	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/gin-gonic/gin"
-	"gorm.io/driver/postgres"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 func MockGinContext(method string) (*gin.Context, *httptest.ResponseRecorder) {
@@ -35,16 +38,20 @@ func MockJsonPost(ctx *gin.Context, content any) []byte {
 	return jsonContent
 }
 
-func MockGormDB() *gorm.DB {
-	sqlDB, _, err := sqlmock.New()
+func MockGormDB(model any) *gorm.DB {
+	gormDB, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
-
-	gormDB, err := gorm.Open(postgres.New(postgres.Config{Conn: sqlDB}), &gorm.Config{})
-	if err != nil {
-		panic(err)
-	}
+	gormDB.Logger.LogMode(logger.Silent)
+	gormDB.AutoMigrate(model)
 
 	return gormDB
+}
+
+func RandomStr() string {
+	rand.Seed(time.Now().UnixMicro())
+	str := fmt.Sprintf("%d", rand.Int63())
+
+	return str
 }
